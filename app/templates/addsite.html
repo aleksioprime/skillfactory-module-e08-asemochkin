@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Добавление адреса сайта</title>
+</head>
+<body>
+  <h4>Добавьте сайт для анализа</h4>
+  <form action="/add_site" method="POST">
+    {{ form.csrf_token }}
+    <div>Адрес сайта: {{ form.address }}</div>
+    <input type="submit" value="Добавить">
+  </form>
+</body>
+</html>

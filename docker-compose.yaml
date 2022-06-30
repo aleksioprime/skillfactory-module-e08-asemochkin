@@ -1,0 +1,40 @@
+version: '3.7'
+services:
+    flask:
+        build: .
+        ports:
+            - "5001:5001"
+        volumes:
+            - .:/app
+        environment:
+            - DATABASE_URL=postgresql://postgres:password@postgres:5432/parsing_websites
+        depends_on:
+            - postgres
+            - redis
+    postgres:
+        image: postgres:latest
+        ports:
+            - "5432:5432"
+        user: postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=parsing_websites
+        restart: always
+    redis:
+        image: redis:alpine
+        ports:
+            - "6379:6379"
+    celery:
+        build: .
+        command: celery worker -A app.site:celery --loglevel=info
+        volumes:
+            - .:/app
+        environment:
+            - DATABASE_URL=postgresql://postgres:password@postgres:5432/parsing_websites
+            - CELERY_BROKER_URL=redis://redis
+            - CELERY_RESULT_BACKEND=redis://redis
+        depends_on:
+            - postgres
+            - redis
+            - flask
